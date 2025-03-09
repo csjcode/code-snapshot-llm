@@ -12,7 +12,7 @@ I needed a simple solution for a small project I was working on to compare code 
 -   If you want to **compare code outputs** across different LLMs. Helps evaluate which model understands your code better.
 -   Automated documentation generation using an LLM.
 -   **For a refactor or debugging task**, you can give an LLM a full snapshot of the codebase instead of manually copying files.
--
+
 #### **Keep in Mind...**
 
 This code was developed for a small project I am working on.
@@ -26,6 +26,8 @@ When using...
 3.  **I always copy-paste a small substring** (ie. 5 characters) of a secret from.env.local and **do a "find" search in the code snapshot text file**, just to double-check, before I submit the text code snapshot to an LLM,
 
 ⚠️ **Use this code carefully, the output file could have sensitive info if you do not exclude it, or if there is an error. Never include files/directories with sensitive info, PII (private user info), company/private info, passwords or secret/API keys, etc. *You are responsible to double check output data****, it could include sensitive info in the codebase output file that you must manually check/remove. *
+
+⚠️ It attempts to use the .gitignore file but it may fail for a variety of reasons, so you must validate that it is working as expected and no sensitive info is added. You should still add secret/private files to the isExcluded section earlier in the file, as an added precaution. There's no guarantee any of this works all the time, I've not tested it on a large-scale, so manually confirm its working as intended.
 
 See https://opensource.org/license/mit
 
