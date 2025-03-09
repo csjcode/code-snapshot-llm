@@ -1,3 +1,7 @@
+// ⚠️ Use at your own risk. Do not include sensitive data from your codebase.
+// ⚠️ Validate your output file has no sensitive data. This does not do so automatically.
+// This is for experimental usage and learning only. No warranty.
+
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import fs from 'fs';
