@@ -6,20 +6,32 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import fs from 'fs';
 import path from 'path';
+import { execSync } from 'child_process';
 
 // Get the current file's directory
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Construct a date string (YYYY-MM-DD)
+const dateString = new Date().toISOString().split('T')[0];
+
+const defaultOutputFileName = `code_snapshot_${dateString}.txt`;
+
 // Define the output file path for the code snapshot
-const outputFilePath = process.argv[2] || process.env.OUTPUT_PATH || path.join(__dirname, 'code_snapshot.txt');
+const outputFilePath =
+  process.argv[2] ||
+  process.env.OUTPUT_PATH ||
+  path.join(__dirname, defaultOutputFileName);
 
 // Directories and files to exclude from the snapshot
 const excludeDirs = ['node_modules', '.git', '.next', '.cursor'];
-const excludeFiles = ['.env', '.env.local', '.env.development', '.env.production', '.env.test'];
+const excludeFiles = ['.env', '.env.local', '.env.development', '.env.production', '.env.test', 'package-lock.json'];
+
+// Directories to exclude from the tree command
+const excludeDirsTree = ['node_modules', '.next', '.vercel', 'supabase'];
 
 // File extensions to include in the snapshot
-const includeExtensions = ['.tsx', '.ts', '.js', '.css', '.json'];
+const includeExtensions = ['.tsx', '.ts', '.js', '.css', '.json', '.prisma', '.md'];
 
 // Store .gitignore patterns
 let gitignorePatterns = [];
@@ -27,6 +39,19 @@ let gitignorePatterns = [];
 // Function to log messages
 function logMessage(message) {
   console.log(`[LOG] ${message}`);
+}
+
+// Function to generate and prepend tree output
+function prependTreeOutput() {
+  try {
+    const treeCommand = `tree -I '${excludeDirsTree.join('|')}'`;
+    const treeOutput = execSync(treeCommand, { cwd: __dirname, encoding: 'utf-8' });
+    fs.writeFileSync(outputFilePath, `--- Project Directory Structure ---\n${treeOutput}\n`);
+    logMessage('Prepended tree output to snapshot');
+  } catch (error) {
+    logMessage(`Error generating tree output: ${error.message}`);
+    fs.writeFileSync(outputFilePath, `--- Project Directory Structure ---\nError generating tree output\n\n`);
+  }
 }
 
 // Function to write file content to the output file
@@ -124,6 +149,9 @@ if (fs.existsSync(outputFilePath)) {
   fs.unlinkSync(outputFilePath);
   logMessage(`Cleared previous snapshot at ${outputFilePath}`);
 }
+
+// Prepend the tree output
+prependTreeOutput();
 
 // Add .gitignore exclusions before starting the directory read
 addGitignoreExclusions();
