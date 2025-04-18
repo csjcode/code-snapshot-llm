@@ -3,6 +3,8 @@ This code will give you a code snapshot to input into an LLM.
 
 ## create_code_snapshot.js
 
+✅ 20250418 - Update, prepend to output file tree file structure info
+
 I needed a simple solution for a small project I was working on to compare code outputs on various LLMs. 
 
 **You can output your codebase into a file and then upload it to Grok, for example.**
